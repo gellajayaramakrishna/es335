@@ -1,0 +1,9 @@
+earthengine-api
+pandas
+numpy
+scikit-learn
+geopandas
+rasterio
+matplotlib
+jupyter
+ipykernel
