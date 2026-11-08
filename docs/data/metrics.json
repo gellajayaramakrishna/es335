@@ -1,0 +1,283 @@
+{
+ "data": {
+  "rows_raw": 56766,
+  "rows_clean": 56582,
+  "cells": 9461,
+  "years": [
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "images_per_year": {
+   "2020": 10,
+   "2021": 8,
+   "2022": 21,
+   "2023": 18,
+   "2024": 20,
+   "2025": 16
+  },
+  "train_rows": 46586,
+  "test_rows": 9996,
+  "blocks": 110,
+  "test_blocks": 22
+ },
+ "cv": [
+  {
+   "model": "Baseline (mean)",
+   "MAE": 2.372,
+   "MAE_sd": 0.086,
+   "RMSE": 3.098,
+   "RMSE_sd": 0.153,
+   "R2": -0.015,
+   "R2_sd": 0.009
+  },
+  {
+   "model": "Linear Regression",
+   "MAE": 1.472,
+   "MAE_sd": 0.041,
+   "RMSE": 1.889,
+   "RMSE_sd": 0.058,
+   "R2": 0.619,
+   "R2_sd": 0.047
+  },
+  {
+   "model": "Random Forest (tuned)",
+   "MAE": 1.395,
+   "MAE_sd": 0.028,
+   "RMSE": 1.802,
+   "RMSE_sd": 0.04,
+   "R2": 0.653,
+   "R2_sd": 0.04
+  }
+ ],
+ "test": [
+  {
+   "model": "Baseline (mean)",
+   "MAE": 2.41,
+   "RMSE": 3.153,
+   "R2": -0.026
+  },
+  {
+   "model": "Linear Regression",
+   "MAE": 1.462,
+   "RMSE": 1.916,
+   "R2": 0.621
+  },
+  {
+   "model": "Random Forest (tuned)",
+   "MAE": 1.382,
+   "RMSE": 1.81,
+   "R2": 0.662
+  }
+ ],
+ "test_mae_ci95": {
+  "baseline": [
+   2.156,
+   2.714
+  ],
+  "lr": [
+   1.375,
+   1.555
+  ],
+  "rf": [
+   1.318,
+   1.454
+  ]
+ },
+ "lr_minus_rf_mae": {
+  "mean": 0.081,
+  "ci95": [
+   0.044,
+   0.118
+  ]
+ },
+ "rf_importance": [
+  {
+   "feature": "frac_crop",
+   "MAE_increase": -0.002,
+   "sd": 0.002
+  },
+  {
+   "feature": "frac_grass",
+   "MAE_increase": 0.0,
+   "sd": 0.001
+  },
+  {
+   "feature": "frac_shrub",
+   "MAE_increase": 0.002,
+   "sd": 0.001
+  },
+  {
+   "feature": "frac_tree",
+   "MAE_increase": 0.003,
+   "sd": 0.002
+  },
+  {
+   "feature": "frac_bare",
+   "MAE_increase": 0.009,
+   "sd": 0.002
+  },
+  {
+   "feature": "frac_water",
+   "MAE_increase": 0.038,
+   "sd": 0.002
+  },
+  {
+   "feature": "frac_built",
+   "MAE_increase": 0.038,
+   "sd": 0.002
+  },
+  {
+   "feature": "NDVI",
+   "MAE_increase": 0.238,
+   "sd": 0.005
+  },
+  {
+   "feature": "NDWI",
+   "MAE_increase": 0.423,
+   "sd": 0.007
+  },
+  {
+   "feature": "NDBI",
+   "MAE_increase": 1.517,
+   "sd": 0.011
+  }
+ ],
+ "lr_coefficients": [
+  {
+   "feature": "NDWI",
+   "coef_per_SD": -4.53
+  },
+  {
+   "feature": "NDVI",
+   "coef_per_SD": -3.613
+  },
+  {
+   "feature": "frac_shrub",
+   "coef_per_SD": 0.045
+  },
+  {
+   "feature": "frac_grass",
+   "coef_per_SD": 0.063
+  },
+  {
+   "feature": "frac_bare",
+   "coef_per_SD": 0.124
+  },
+  {
+   "feature": "frac_water",
+   "coef_per_SD": 0.148
+  },
+  {
+   "feature": "frac_tree",
+   "coef_per_SD": 0.229
+  },
+  {
+   "feature": "frac_built",
+   "coef_per_SD": 0.55
+  },
+  {
+   "feature": "NDBI",
+   "coef_per_SD": 2.154
+  }
+ ],
+ "error_by_landcover": [
+  {
+   "dominant": "bare",
+   "n": 48,
+   "MAE": 1.34,
+   "mean_resid": 0.43
+  },
+  {
+   "dominant": "built",
+   "n": 3720,
+   "MAE": 1.5,
+   "mean_resid": 0.45
+  },
+  {
+   "dominant": "crop",
+   "n": 4662,
+   "MAE": 1.32,
+   "mean_resid": 0.0
+  },
+  {
+   "dominant": "grass",
+   "n": 12,
+   "MAE": 1.22,
+   "mean_resid": 0.32
+  },
+  {
+   "dominant": "shrub",
+   "n": 234,
+   "MAE": 1.34,
+   "mean_resid": 0.14
+  },
+  {
+   "dominant": "tree",
+   "n": 1128,
+   "MAE": 1.28,
+   "mean_resid": -0.07
+  },
+  {
+   "dominant": "water",
+   "n": 192,
+   "MAE": 1.31,
+   "mean_resid": 0.49
+  }
+ ],
+ "error_by_lst_range": [
+  {
+   "LST_bin": "(30, 42]",
+   "n": 404,
+   "MAE": 1.28,
+   "mean_resid": -0.48
+  },
+  {
+   "LST_bin": "(42, 45]",
+   "n": 856,
+   "MAE": 1.47,
+   "mean_resid": -1.04
+  },
+  {
+   "LST_bin": "(45, 48]",
+   "n": 3486,
+   "MAE": 1.13,
+   "mean_resid": -0.61
+  },
+  {
+   "LST_bin": "(48, 51]",
+   "n": 3742,
+   "MAE": 1.16,
+   "mean_resid": 0.39
+  },
+  {
+   "LST_bin": "(51, 54]",
+   "n": 1276,
+   "MAE": 2.23,
+   "mean_resid": 2.04
+  },
+  {
+   "LST_bin": "(54, 60]",
+   "n": 232,
+   "MAE": 3.93,
+   "mean_resid": 3.93
+  }
+ ],
+ "hotspot_recall": [
+  {
+   "model": "Linear Regression",
+   "mean": 0.51,
+   "min": 0.449,
+   "max": 0.557
+  },
+  {
+   "model": "Random Forest",
+   "mean": 0.536,
+   "min": 0.512,
+   "max": 0.587
+  }
+ ]
+}
