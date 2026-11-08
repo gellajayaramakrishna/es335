@@ -137,7 +137,10 @@ Then open http://localhost:8000. Opening `index.html` directly will not load the
 
 Claude (Anthropic) was used to help draft code for the notebooks and website, and to explain methods. All design choices, analysis runs, results and interpretations were checked by us, and we take responsibility for the work.
 
+
 ## Contributions
 
-- **Gella Jaya Rama Krishna:** _fill in_
-- **Jangam Sanjay:** _fill in_
+We both contributed equally and reviewed all results and the final write-up.
+
+- **Gella Jaya Rama Krishna (23110115):** Earth Engine setup and data export (cloud masking, LST conversion, spectral indices, 300 m aggregation); data exploration and cleaning; spatial block split design; Random Forest tuning and final test evaluation.
+- **Jangam Sanjay (23110144):** Baseline and Linear Regression modelling; feature importance and coefficient analysis; error analysis (residual maps, error by land cover and temperature range, hotspot recall); website data export and interactive website (map, charts, relationship explorer); README and reproduction steps.
