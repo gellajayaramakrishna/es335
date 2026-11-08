@@ -1,0 +1,3 @@
+model,mean,min,max
+Linear Regression,0.51,0.449,0.557
+Random Forest,0.536,0.512,0.587
