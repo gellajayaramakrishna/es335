@@ -31,29 +31,30 @@ How accurately can machine learning models predict summer land surface temperatu
 
 ## Repository structure
 
+```
 es335/
 ├── data/
-│ ├── raw/ # CSVs exported from Google Earth Engine (one per year)
-│ └── processed/ # cleaned data, split labels, test predictions, test_blocks.json
+│   ├── raw/                         # CSVs exported from Google Earth Engine (one per year)
+│   └── processed/                   # cleaned data, split labels, test predictions, test_blocks.json
 ├── notebooks/
-│ ├── 01_gee_export.ipynb # Earth Engine: cloud masking, features, 300 m grid, export
-│ ├── 02_explore_data.ipynb # merge, quality checks, plots, cleaning
-│ ├── 03_spatial_split.ipynb # 3 km block split, 20% of blocks held out
-│ ├── 04_models.ipynb # baseline, Linear Regression, Random Forest, CV, final test
-│ ├── 05_interpret_errors.ipynb # importance, coefficients, residuals, hotspot recall
-│ └── 06_export_web_data.ipynb # JSON files for the website
+│   ├── 01_gee_export.ipynb          # Earth Engine: cloud masking, features, 300 m grid, export
+│   ├── 02_explore_data.ipynb        # merge, quality checks, plots, cleaning
+│   ├── 03_spatial_split.ipynb       # 3 km block split, 20% of blocks held out
+│   ├── 04_models.ipynb              # baseline, Linear Regression, Random Forest, CV, final test
+│   ├── 05_interpret_errors.ipynb    # importance, coefficients, residuals, hotspot recall
+│   └── 06_export_web_data.ipynb     # JSON files for the website
 ├── outputs/
-│ ├── figures/ # all plots
-│ └── *.csv # CV results, test results, importance, error tables
-├── docs/ # website (served by GitHub Pages)
-│ ├── index.html
-│ ├── css/style.css
-│ ├── js/app.js
-│ ├── data/ # cells.json, metrics.json, scatter.json
-│ └── figures/
+│   ├── figures/                     # all plots
+│   └── *.csv                        # CV results, test results, importance, error tables
+├── docs/                            # website (served by GitHub Pages)
+│   ├── index.html
+│   ├── css/style.css
+│   ├── js/app.js
+│   ├── data/                        # cells.json, metrics.json, scatter.json
+│   └── figures/
 ├── requirements.txt
 └── README.md
-
+```
 
 ## Data access
 
@@ -134,7 +135,7 @@ Then open http://localhost:8000. Opening `index.html` directly will not load the
 
 ## AI-use disclosure
 
-Claude (Anthropic) was used to help draft code for the notebooks and website, and to explain methods. All design choices, analysis runs, results and interpretations were checked by the authors, who take responsibility for the work.
+Claude (Anthropic) was used to help draft code for the notebooks and website, and to explain methods. All design choices, analysis runs, results and interpretations were checked by us, and we take responsibility for the work.
 
 ## Contributions
 
