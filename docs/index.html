@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ahmedabad Heat Hotspots</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>Predicting Urban Land Surface Temperature in Ahmedabad</h1>
+    <p class="sub">A spatially validated machine learning study of summer heat hotspots, 2020–2025</p>
+    <p class="authors">ES 335 Machine Learning · IIT Gandhinagar · Gella Jaya Rama Krishna (23110115) &amp; Jangam Sanjay (23110144)</p>
+  </div>
+  <nav>
+    <a href="#question">Question</a><a href="#data">Data</a><a href="#preprocessing">Preprocessing</a>
+    <a href="#methods">Methods</a><a href="#evaluation">Evaluation</a><a href="#results">Results</a>
+    <a href="#errors">Errors</a><a href="#limitations">Limitations</a><a href="#conclusion">Conclusion</a>
+    <a href="#reproduce">Reproduce</a>
+  </nav>
+</header>
+
+<main class="wrap">
+
+<!-- ================= QUESTION ================= -->
+<section id="question">
+  <h2>1. The question</h2>
+  <p class="lead">How accurately can machine learning predict summer land surface temperature (LST) across Ahmedabad from satellite-derived vegetation, built-up, moisture and land-cover features, how well do the models generalise to geographically separate areas, and which features are most informative for identifying heat hotspots?</p>
+  <div class="cards">
+    <div class="card"><b>One row</b><span>One 300 m × 300 m grid cell in one summer (April–June composite)</span></div>
+    <div class="card"><b>Target</b><span>Land surface temperature in °C (Landsat thermal band)</span></div>
+    <div class="card"><b>Prediction setting</b><span>For a cell in an area the model never saw, predict LST from that summer's satellite features</span></div>
+    <div class="card"><b>Claim limit</b><span>Associations only. A predictive link does not prove that changing a feature changes temperature.</span></div>
+  </div>
+  <p>Why it matters: summer surface heat varies strongly within a city. A model that maps it from widely available satellite features can help planners shortlist areas for closer investigation and possible cooling measures.</p>
+</section>
+
+<!-- ================= DATA ================= -->
+<section id="data">
+  <h2>2. Data</h2>
+  <ul>
+    <li><b>USGS Landsat 8 &amp; 9, Collection 2 Level 2</b>: surface reflectance and surface temperature at 30 m, accessed through Google Earth Engine.</li>
+    <li><b>ESA WorldCover v200 (2021)</b>: 10 m land-cover map, used for land-cover fractions.</li>
+    <li><b>Study area</b>: 72.45–72.75°E, 22.90–23.15°N (about 31 km × 28 km around Ahmedabad).</li>
+    <li><b>Period</b>: April–June of each year from 2020 to 2025.</li>
+  </ul>
+  <div id="dataStats" class="cards"></div>
+  <h3>Variables</h3>
+  <table class="vars">
+    <tr><th>Variable</th><th>Meaning</th></tr>
+    <tr><td>LST</td><td>Target. Summer median land surface temperature (°C)</td></tr>
+    <tr><td>NDVI</td><td>Vegetation index = (NIR − Red) / (NIR + Red). Higher means greener.</td></tr>
+    <tr><td>NDBI</td><td>Built-up index = (SWIR1 − NIR) / (SWIR1 + NIR). Higher means more built-up or dry bare surface.</td></tr>
+    <tr><td>NDWI</td><td>Water index = (Green − NIR) / (Green + NIR). Higher means more water or moisture.</td></tr>
+    <tr><td>frac_*</td><td>Fraction of the cell covered by tree, shrub, grass, crop, built, bare and water (WorldCover)</td></tr>
+  </table>
+  <p><b>Access limits:</b> the data is free but requires a registered Google Earth Engine project (noncommercial tier). No personal data is involved.</p>
+  <figure><img src="figures/lst_map_2024.png" alt="Summer 2024 LST map"><figcaption>Summer 2024 LST. The Sabarmati river and Kankaria Lake appear cool; the airport and dry peripheral land appear hot.</figcaption></figure>
+</section>
+
+<!-- ================= PREPROCESSING ================= -->
+<section id="preprocessing">
+  <h2>3. Preprocessing</h2>
+  <ol>
+    <li><b>Cloud masking:</b> pixels flagged as cloud, dilated cloud or cloud shadow in the Landsat QA band were removed.</li>
+    <li><b>Unit conversion:</b> raw values were converted to reflectance and to temperature in °C using the official USGS scale factors.</li>
+    <li><b>Summer composite:</b> the median of all clear images from April–June for each year, so a single unusual day cannot dominate.</li>
+    <li><b>Aggregation:</b> 30 m Landsat pixels and 10 m land-cover pixels were averaged into a 300 m grid.</li>
+    <li><b>Quality filter:</b> cells built from fewer than 3 clear observations were dropped (184 of 56,766 rows, 0.3%).</li>
+    <li><b>No missing values remained</b>, so no imputation was needed.</li>
+    <li><b>Scaling</b> (Linear Regression only) was fitted inside a pipeline on training folds only, so test data never influenced it.</li>
+  </ol>
+  <figure><img src="figures/lst_histogram.png" alt="LST distribution"><figcaption>Distribution of LST across all cells and years (mean ≈ 47.7 °C).</figcaption></figure>
+</section>
+
+<!-- ================= METHODS ================= -->
+<section id="methods">
+  <h2>4. Baseline and methods</h2>
+  <div class="cards">
+    <div class="card"><b>Baseline: mean predictor</b><span>Always predicts the average training LST. Any useful model must beat it.</span></div>
+    <div class="card"><b>Linear Regression</b><span>Minimises squared error with one weight per feature. Interpretable, but assumes straight-line relationships. One land-cover fraction (crop) is dropped as the reference because the fractions sum to about 1.</span></div>
+    <div class="card"><b>Random Forest</b><span>Averages 300 decision trees grown on bootstrap samples. Captures non-linear effects and interactions without assuming a formula. Tuned settings: max_depth = 20, max_features = 0.5, min_samples_leaf = 5.</span></div>
+  </div>
+  <p>Latitude and longitude were deliberately <b>not</b> used as features, so the models must learn from environmental conditions rather than memorising locations.</p>
+</section>
+
+<!-- ================= EVALUATION ================= -->
+<section id="evaluation">
+  <h2>5. Evaluation design</h2>
+  <p>Nearby grid cells are almost identical, so a random split would leak information between training and test. Instead, the area was cut into <b>110 blocks of 3 km × 3 km</b>. A fixed random 20% of blocks (22 blocks, seed 42) was held out as the final test set. All six years of a cell always stay on the same side of the split.</p>
+  <figure><img src="figures/spatial_split_map.png" alt="Spatial split"><figcaption>Training blocks (blue) and held-out test blocks (orange).</figcaption></figure>
+  <ul>
+    <li><b>Tuning:</b> 5-fold GroupKFold cross-validation on training blocks only, grouped by block.</li>
+    <li><b>Final test:</b> each model was trained on all training blocks and scored once on the test blocks, after all choices were fixed.</li>
+    <li><b>Metrics:</b> MAE (typical error in °C), RMSE (penalises large misses), and R² (share of variation explained compared with the mean).</li>
+    <li><b>Uncertainty:</b> a block bootstrap (1,000 resamples of test blocks) gives 95% intervals for test MAE.</li>
+  </ul>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section id="results">
+  <h2>6. Results</h2>
+
+  <h3>Model comparison</h3>
+  <div class="controls">
+    <label>Evaluation: <select id="evalSelect"><option value="test">Held-out test blocks</option><option value="cv">Cross-validation (train)</option></select></label>
+    <label>Metric: <select id="metricSelect"><option>MAE</option><option>RMSE</option><option>R2</option></select></label>
+  </div>
+  <div class="chartbox"><canvas id="modelChart"></canvas></div>
+  <div id="testTable"></div>
+  <p id="diffText" class="note"></p>
+
+  <h3>Interactive map</h3>
+  <p>Choose a layer to explore observed temperature, features, model errors and hotspots. Click any square for its details.</p>
+  <div class="controls">
+    <label>Layer:
+      <select id="layerSelect">
+        <option value="lst">Observed LST (°C)</option>
+        <option value="hot">Observed hotspots (top 10%)</option>
+        <option value="ndvi">NDVI (vegetation)</option>
+        <option value="ndbi">NDBI (built-up / dry)</option>
+        <option value="built">Built-up fraction</option>
+        <option value="resid">Random Forest error (test cells)</option>
+        <option value="split">Train / test split</option>
+      </select>
+    </label>
+    <label id="yearWrap">Year: <input type="range" id="yearSlider" min="0" max="5" value="4"> <span id="yearLabel"></span></label>
+  </div>
+  <div id="map"></div>
+  <div id="legend" class="legend"></div>
+
+  <h3>Relationship explorer</h3>
+  <p>Pick a feature to see how it relates to temperature (2,000 random cells from 2024).</p>
+  <div class="controls">
+    <label>Feature: <select id="featureSelect">
+      <option value="NDBI">NDBI</option><option value="NDVI">NDVI</option><option value="NDWI">NDWI</option>
+      <option value="frac_built">Built-up fraction</option><option value="frac_tree">Tree fraction</option>
+    </select></label>
+    <span id="corrText" class="note"></span>
+  </div>
+  <div class="chartbox"><canvas id="scatterChart"></canvas></div>
+
+  <h3>Which features matter?</h3>
+  <div class="two">
+    <div><div class="chartbox"><canvas id="importanceChart"></canvas></div>
+      <p class="note">Random Forest permutation importance on test data: how much MAE rises when a feature is shuffled.</p></div>
+    <div><div class="chartbox"><canvas id="coefChart"></canvas></div>
+      <p class="note">Linear Regression standardised coefficients (°C per 1 SD). NDVI, NDBI and NDWI are strongly correlated, so individual weights are unstable and should not be read as independent effects.</p></div>
+  </div>
+
+  <h3>Can the model find hotspots?</h3>
+  <p id="hotspotText"></p>
+</section>
+
+<!-- ================= ERRORS ================= -->
+<section id="errors">
+  <h2>7. Errors</h2>
+  <figure><img src="figures/rf_residual_map.png" alt="Residual map"><figcaption>Random Forest errors on test blocks (actual − predicted). Red means hotter than predicted.</figcaption></figure>
+  <div class="two">
+    <div><h3>By actual temperature</h3><div id="errLstTable"></div></div>
+    <div><h3>By dominant land cover</h3><div id="errLcTable"></div></div>
+  </div>
+  <p>The model pulls extreme values toward the average: the hottest cells (above 54 °C) are underestimated by about 4 °C. Errors also cluster in space, for example next to the airport, which suggests heat sources the features do not capture, such as tarmac, roof materials or industrial activity.</p>
+</section>
+
+<!-- ================= LIMITATIONS ================= -->
+<section id="limitations">
+  <h2>8. Limitations</h2>
+  <ul>
+    <li>LST is ground-surface temperature at the satellite's morning overpass (about 10:30 IST), not air temperature or the heat people feel.</li>
+    <li>The land-cover map is a single 2021 snapshot, so it does not change by year.</li>
+    <li>NDBI cannot fully separate buildings from dry bare soil.</li>
+    <li>Only 22 test blocks, so the scores carry real uncertainty (shown by the bootstrap intervals).</li>
+    <li>Results are associations; they do not show that adding vegetation would cool an area by a specific amount.</li>
+    <li>The model underestimates the most extreme hotspots.</li>
+  </ul>
+</section>
+
+<!-- ================= CONCLUSION ================= -->
+<section id="conclusion">
+  <h2>9. Conclusion</h2>
+  <p>Both models clearly beat the mean baseline on geographically separate test areas. Random Forest is the best model (test MAE ≈ 1.38 °C, R² ≈ 0.66), but only marginally better than Linear Regression, so most of the predictable signal is close to linear. NDBI is by far the most informative feature, and static land-cover fractions add little once the spectral indices are known. The model identifies about half of the true hottest cells, roughly five times better than chance. That makes it useful for shortlisting candidate hotspots, but not as a stand-alone screening tool.</p>
+</section>
+
+<!-- ================= REPRODUCE ================= -->
+<section id="reproduce">
+  <h2>10. Reproduction</h2>
+  <ol>
+    <li>Clone the <a href="https://github.com/gellajayaramakrishna/es335">GitHub repository</a> and install the packages in <code>requirements.txt</code>.</li>
+    <li>Register a Google Earth Engine project (free noncommercial tier) and run <code>notebooks/01_gee_export.ipynb</code> to export the raw CSVs. The exported CSVs are also included in <code>data/raw/</code>.</li>
+    <li>Run notebooks 02 to 06 in order: exploration and cleaning, spatial split (seed 42, 3 km blocks), models, interpretation, and website data export.</li>
+    <li>The exact held-out blocks are listed in <code>data/processed/test_blocks.json</code>.</li>
+  </ol>
+  <h3>Sources and tools</h3>
+  <ul class="small">
+    <li>Landsat 8–9 Collection 2 Level 2 data courtesy of the U.S. Geological Survey.</li>
+    <li>Zanaga, D. et al. (2022). ESA WorldCover 10 m 2021 v200.</li>
+    <li>Gorelick, N. et al. (2017). Google Earth Engine: Planetary-scale geospatial analysis for everyone. Remote Sensing of Environment.</li>
+    <li>Pedregosa, F. et al. (2011). Scikit-learn: Machine Learning in Python. JMLR.</li>
+    <li>Leaflet, Chart.js, and OpenStreetMap base map.</li>
+  </ul>
+  <h3>AI-use disclosure</h3>
+  <p class="small">Claude (Anthropic) was used to help draft code and explanations. All design choices, analysis runs and interpretations were checked and are the responsibility of the authors.</p>
+</section>
+
+</main>
+
+<footer><div class="wrap">ES 335 · IIT Gandhinagar · 2026</div></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
