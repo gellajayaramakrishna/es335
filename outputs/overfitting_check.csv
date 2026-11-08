@@ -1,0 +1,4 @@
+model,train_MAE,validation_MAE,gap
+Linear Regression,1.458,1.472,0.013
+Unconstrained RF (deep trees),0.501,1.414,0.914
+Tuned RF,0.965,1.397,0.431

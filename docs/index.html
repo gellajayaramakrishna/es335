@@ -85,6 +85,15 @@
     <div class="card"><b>Random Forest</b><span>Averages 300 decision trees grown on bootstrap samples. Captures non-linear effects and interactions without assuming a formula. Tuned settings: max_depth = 20, max_features = 0.5, min_samples_leaf = 5.</span></div>
   </div>
   <p>Latitude and longitude were deliberately <b>not</b> used as features, so the models must learn from environmental conditions rather than memorising locations.</p>
+  <h3>Checking for overfitting</h3>
+  <p>We compared training error with grouped cross-validation error (training blocks only):</p>
+  <table>
+    <tr><th>Model</th><th class="num">Train MAE (°C)</th><th class="num">Validation MAE (°C)</th><th class="num">Gap</th></tr>
+    <tr><td>Linear Regression</td><td class="num">1.458</td><td class="num">1.472</td><td class="num">0.013</td></tr>
+    <tr><td>Unconstrained Random Forest</td><td class="num">0.501</td><td class="num">1.414</td><td class="num">0.914</td></tr>
+    <tr class="best"><td>Tuned Random Forest</td><td class="num">0.965</td><td class="num">1.397</td><td class="num">0.431</td></tr>
+  </table>
+  <p>The unconstrained forest nearly memorises the training cells but is almost three times worse on unseen blocks, which is clear overfitting. Limiting tree depth and leaf size halved the gap and gave the best validation error. Linear Regression shows almost no gap, but it is limited to straight-line patterns.</p>
 </section>
 
 <!-- ================= EVALUATION ================= -->
@@ -146,9 +155,9 @@
   <h3>Which features matter?</h3>
   <div class="two">
     <div><div class="chartbox"><canvas id="importanceChart"></canvas></div>
-      <p class="note">Random Forest permutation importance on test data: how much MAE rises when a feature is shuffled.</p></div>
+      <p class="note">Random Forest permutation importance on test data: how much MAE rises when a feature is shuffled. Because NDVI and NDWI carry nearly the same information, shuffling one barely hurts while the other remains, so their individual importance is understated.</p></div>
     <div><div class="chartbox"><canvas id="coefChart"></canvas></div>
-      <p class="note">Linear Regression standardised coefficients (°C per 1 SD). NDVI, NDBI and NDWI are strongly correlated, so individual weights are unstable and should not be read as independent effects.</p></div>
+      <p class="note">Linear Regression standardised coefficients (°C per 1 SD). NDVI and NDWI are almost perfectly correlated (r = −0.97), so the model splits their shared effect arbitrarily; this is why NDWI's weight is large and negative even though its simple correlation with LST is weakly positive. Individual weights should not be read as independent effects.</p></div>
   </div>
 
   <h3>Can the model find hotspots?</h3>
