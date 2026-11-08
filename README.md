@@ -133,9 +133,10 @@ Then open http://localhost:8000. Opening `index.html` directly will not load the
 - Pedregosa, F. et al. (2011). Scikit-learn: Machine Learning in Python. *JMLR*, 12, 2825–2830.
 - Leaflet (https://leafletjs.com), Chart.js (https://www.chartjs.org), OpenStreetMap contributors (base map).
 
+
 ## AI-use disclosure
 
-Claude (Anthropic) was used to help draft code for the notebooks and website, and to explain methods. All design choices, analysis runs, results and interpretations were checked by us, and we take responsibility for the work.
+We used Claude (Anthropic) as a coding assistant while building this project. It helped us draft parts of the Python notebooks and the website code, and explained methods such as spatial cross-validation and permutation importance when we were unsure. We ran every notebook ourselves, checked the outputs at each step (for example, fixing the Earth Engine export error and the grid-cell ID mismatch), and verified that the maps matched real Ahmedabad landmarks. The research question, the choice of data, the evaluation design and the interpretation of the results are our own, and we take full responsibility for the work.
 
 
 ## Contributions
