@@ -52,6 +52,9 @@ es335/
 │   ├── 02_explore_data.ipynb        # merge, quality checks, plots, cleaning
 │   ├── 03_spatial_split.ipynb       # 3 km block split, 20% of blocks held out
 │   ├── 04_models.ipynb              # baseline, Linear Regression, Random Forest, CV, final test
+│   ├── 05_interpret_errors.ipynb    # importance, coefficients, residuals, hotspot recall, overfitting check
+│   ├── 06_export_web_data.ipynb     # JSON files for the website
+│   └── 07_gradient_boosting.ipynb   # supplementary gradient-boosting experiment
 ├── outputs/
 │   ├── figures/                     # all plots
 │   └── *.csv                        # CV results, test results, importance, error tables
