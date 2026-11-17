@@ -51,7 +51,7 @@ es335/
 │   ├── 02_explore_data.ipynb        # merge, quality checks, plots, cleaning
 │   ├── 03_spatial_split.ipynb       # 3 km block split, 20% of blocks held out
 │   ├── 04_models.ipynb              # baseline, Linear Regression, Random Forest, CV, final test
-│   ├── 05_interpret_errors.ipynb    # importance, coefficients, residuals, hotspot recall
+│   ├── 05_interpret_errors.ipynb    # importance, coefficients, residuals, hotspot recall, overfitting check
 │   └── 06_export_web_data.ipynb     # JSON files for the website
 ├── outputs/
 │   ├── figures/                     # all plots
@@ -129,7 +129,7 @@ Then open http://localhost:8000. Opening `index.html` directly will not load the
 
 ## Limitations
 
-- LST is ground-surface temperature at the morning satellite overpass (about 10:30 IST), not air temperature.
+- LST is ground-surface temperature at the late-morning satellite overpass (roughly 10:30–11:00 IST), not air temperature or peak afternoon heat.
 - Land-cover fractions come from a single 2021 map.
 - NDBI does not fully separate buildings from dry bare soil.
 - Only 22 test blocks, so the scores carry real uncertainty.
