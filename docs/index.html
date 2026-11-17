@@ -130,6 +130,14 @@
   <div class="chartbox"><canvas id="modelChart"></canvas></div>
   <div id="testTable"></div>
   <p id="diffText" class="note"></p>
+  <h3>Supplementary experiment: gradient boosting</h3>
+  <p>After the main evaluation, we added a third model: histogram-based gradient boosting, which builds trees one after another, each correcting the errors of the previous ones. It was tuned with the same 5-fold grouped cross-validation on training blocks only (best settings: learning rate 0.05, 63 leaf nodes, at least 20 samples per leaf, 300 iterations) and tested once. Early stopping was turned off because it would carve out a random validation set, mixing neighbouring cells.</p>
+  <table>
+    <tr><th>Model</th><th class="num">CV MAE (°C)</th><th class="num">Test MAE (°C)</th><th class="num">Test RMSE (°C)</th><th class="num">Test R²</th><th class="num">Train–val gap</th></tr>
+    <tr><td>Random Forest (tuned)</td><td class="num">1.395</td><td class="num">1.382</td><td class="num">1.810</td><td class="num">0.662</td><td class="num">0.431</td></tr>
+    <tr><td>Gradient Boosting (tuned)</td><td class="num">1.390</td><td class="num">1.371</td><td class="num">1.790</td><td class="num">0.669</td><td class="num">0.230</td></tr>
+  </table>
+  <p>Gradient boosting is consistently but only marginally better (Random Forest minus Gradient Boosting test MAE: 0.011 °C, 95% block-bootstrap interval 0.001 to 0.020 °C), and it overfits less. A difference of about a hundredth of a degree is negligible in practice. Because this model was added after the main test evaluation, we treat it as a supplementary check and keep Random Forest as the primary model. The more useful finding is that two quite different non-linear methods level off at about 1.37–1.40 °C, which suggests the remaining error comes from information the features do not contain rather than from the choice of model. The best setting (63 leaf nodes) was at the edge of the search grid, so slightly larger trees were not explored.</p>
 
   <h3>Interactive map</h3>
   <p>Choose a layer to explore observed temperature, features, model errors and hotspots. Click any square for its details.</p>
@@ -200,7 +208,7 @@
 <!-- ================= CONCLUSION ================= -->
 <section id="conclusion">
   <h2>9. Conclusion</h2>
-  <p>Both models clearly beat the mean baseline on geographically separate test areas. Random Forest is the best model (test MAE ≈ 1.38 °C, R² ≈ 0.66), but only marginally better than Linear Regression, so most of the predictable signal is close to linear. NDBI is by far the most informative feature, and static land-cover fractions add little once the spectral indices are known. The model identifies about half of the true hottest cells, roughly five times better than chance. That makes it useful for shortlisting candidate hotspots, but not as a stand-alone screening tool.</p>
+  <p>Both models clearly beat the mean baseline on geographically separate test areas. Random Forest is the best model (test MAE ≈ 1.38 °C, R² ≈ 0.66), but only marginally better than Linear Regression, so most of the predictable signal is close to linear. A supplementary gradient-boosting model reached almost the same error (test MAE 1.37 °C), so the remaining error appears to be a limit of the features rather than the model. NDBI is by far the most informative feature, and static land-cover fractions add little once the spectral indices are known. The model identifies about half of the true hottest cells, roughly five times better than chance. That makes it useful for shortlisting candidate hotspots, but not as a stand-alone screening tool.</p>
 </section>
 
 <!-- ================= REPRODUCE ================= -->
