@@ -14,6 +14,7 @@
     <h1>Predicting Urban Land Surface Temperature in Ahmedabad</h1>
     <p class="sub">A spatially validated machine learning study of summer heat hotspots, 2020–2025</p>
     <p class="authors">ES 335 Machine Learning · IIT Gandhinagar · Gella Jaya Rama Krishna (23110115) &amp; Jangam Sanjay (23110144)</p>
+        <p class="authors">Code, notebooks, data and full results: <a href="https://github.com/gellajayaramakrishna/es335" style="color:#fdba74">github.com/gellajayaramakrishna/es335</a></p>
   </div>
   <nav>
     <a href="#question">Question</a><a href="#data">Data</a><a href="#preprocessing">Preprocessing</a>
@@ -58,6 +59,14 @@
     <tr><td>frac_*</td><td>Fraction of the cell covered by tree, shrub, grass, crop, built, bare and water (WorldCover)</td></tr>
   </table>
   <p><b>Access limits:</b> the data is free but requires a registered Google Earth Engine project (noncommercial tier). No personal data is involved.</p>
+    <h3>Data quality issues</h3>
+  <ul>
+    <li><b>Clouds:</b> cloudy pixels were masked, so each cell's summer value comes from a different number of clear images (2 to 21, median about 13).</li>
+    <li><b>Uneven coverage:</b> 2020 and 2021 have fewer scenes (10 and 8) because Landsat 9 only began collecting in late 2021.</li>
+    <li><b>Static land cover:</b> the WorldCover map is from 2021 only, so land-cover fractions do not change between years.</li>
+    <li><b>Spatial dependence:</b> neighbouring cells are very similar, which is why we used a block-based split rather than a random one.</li>
+    <li><b>Correlated features:</b> NDVI and NDWI are almost the same signal (r = −0.97), which affects how their importance can be interpreted.</li>
+  </ul>
   <figure><img src="figures/lst_map_2024.png" alt="Summer 2024 LST map"><figcaption>Summer 2024 LST. The Sabarmati river and Kankaria Lake appear cool; the airport and dry peripheral land appear hot.</figcaption></figure>
 </section>
 
@@ -179,7 +188,7 @@
 <section id="limitations">
   <h2>8. Limitations</h2>
   <ul>
-    <li>LST is ground-surface temperature at the satellite's morning overpass (about 10:30 IST), not air temperature or the heat people feel.</li>
+    <li>LST is ground-surface temperature at the satellite's late-morning overpass (roughly 10:30–11:00 IST), not air temperature, peak afternoon heat, or the heat people feel.</li>
     <li>The land-cover map is a single 2021 snapshot, so it does not change by year.</li>
     <li>NDBI cannot fully separate buildings from dry bare soil.</li>
     <li>Only 22 test blocks, so the scores carry real uncertainty (shown by the bootstrap intervals).</li>

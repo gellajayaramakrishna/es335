@@ -29,6 +29,16 @@ How accurately can machine learning models predict summer land surface temperatu
 - Random Forest recovers about 54% of the true hottest 10% of test cells, versus about 10% for random guessing.
 - The model underestimates the hottest cells (above 54 °C) by about 4 °C on average.
 
+## Additional experiments
+
+| Experiment | Where | Output file |
+|---|---|---|
+| Block-bootstrap 95% intervals for test MAE | `04_models.ipynb`, `06_export_web_data.ipynb` | `docs/data/metrics.json` |
+| Hotspot recall (top-10% hottest cells) | `05_interpret_errors.ipynb` | `outputs/hotspot_recall.csv` |
+| Overfitting check: train vs validation MAE for Linear Regression, unconstrained RF and tuned RF | `05_interpret_errors.ipynb` | `outputs/overfitting_check.csv` |
+| Correlation between NDVI, NDBI and NDWI | `05_interpret_errors.ipynb` | `outputs/index_correlations.csv` |
+| Error by dominant land cover and by temperature range | `05_interpret_errors.ipynb` | `outputs/error_by_landcover.csv`, `outputs/error_by_lst_range.csv` |
+
 ## Repository structure
 
 ```
