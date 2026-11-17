@@ -38,6 +38,7 @@ How accurately can machine learning models predict summer land surface temperatu
 | Overfitting check: train vs validation MAE for Linear Regression, unconstrained RF and tuned RF | `05_interpret_errors.ipynb` | `outputs/overfitting_check.csv` |
 | Correlation between NDVI, NDBI and NDWI | `05_interpret_errors.ipynb` | `outputs/index_correlations.csv` |
 | Error by dominant land cover and by temperature range | `05_interpret_errors.ipynb` | `outputs/error_by_landcover.csv`, `outputs/error_by_lst_range.csv` |
+| Supplementary model: tuned gradient boosting (grouped CV, one-time test, bootstrap vs RF) | `07_gradient_boosting.ipynb` | `outputs/cv_results_with_gbm.csv`, `outputs/test_results_with_gbm.csv`, `outputs/gbm_summary.csv` |
 
 ## Repository structure
 
@@ -51,8 +52,6 @@ es335/
 │   ├── 02_explore_data.ipynb        # merge, quality checks, plots, cleaning
 │   ├── 03_spatial_split.ipynb       # 3 km block split, 20% of blocks held out
 │   ├── 04_models.ipynb              # baseline, Linear Regression, Random Forest, CV, final test
-│   ├── 05_interpret_errors.ipynb    # importance, coefficients, residuals, hotspot recall, overfitting check
-│   └── 06_export_web_data.ipynb     # JSON files for the website
 ├── outputs/
 │   ├── figures/                     # all plots
 │   └── *.csv                        # CV results, test results, importance, error tables
